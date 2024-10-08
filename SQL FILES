@@ -1,1 +1,40 @@
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100),
+    student_email VARCHAR(100),
+    enrollment_date DATE
+);
 
+CREATE TABLE Projects (
+    project_id INT PRIMARY KEY,
+    project_name VARCHAR(100),
+    project_description TEXT,
+    start_date DATE,
+    due_date DATE
+);
+
+CREATE TABLE Assignments (
+    assignment_id INT PRIMARY KEY,
+    assignment_name VARCHAR(100),
+    due_date DATE,
+    max_score INT
+);
+
+CREATE TABLE Student_Project_Assignment (
+    spa_id INT PRIMARY KEY,
+    student_id INT,
+    project_id INT,
+    assignment_id INT,
+    submission_date DATE,
+    score INT,
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (project_id) REFERENCES Projects(project_id),
+    FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id)
+);
+
+CREATE TABLE Teachers (
+    teacher_id INT PRIMARY KEY,
+    teacher_name VARCHAR(100),
+    teacher_email VARCHAR(100),
+    subject VARCHAR(100)
+);
