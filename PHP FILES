@@ -1,0 +1,162 @@
+// dbconfig.php
+<?php
+// Database configuration
+$host = "localhost"; // Database host
+$user = "root"; // Database username
+$password = ""; // Database password
+$dbname = "celaje"; // Database name
+$dsn = "mysql:host={$host};dbname={$dbname}"; // Data Source Name
+
+// Create a new PDO instance
+try {
+    $pdo = new PDO($dsn, $user, $password);
+    // Set error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Set the timezone
+    $pdo->exec("SET time_zone = '+08:00';");
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
+?>
+
+
+// fetc_all.php
+<?php
+// Include the database configuration file
+include 'dbconfig.php';
+
+// Prepare and execute the query
+$stmt = $pdo->query("SELECT * FROM Students");
+
+// Fetch all results
+$students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Display the results using print_r within <pre> tags for readability
+echo "<pre>";
+print_r($students);
+echo "</pre>";
+?>
+
+
+// fetch.php
+<?php
+// Include the database configuration file
+include 'dbconfig.php';
+
+// Prepare and execute the query
+$stmt = $pdo->query("SELECT * FROM Students WHERE student_id = 1");
+
+// Fetch one result
+$student = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Display the result using print_r within <pre> tags for readability
+echo "<pre>";
+print_r($student);
+echo "</pre>";
+?>
+
+
+// insert.php
+<?php
+// Include the database configuration file
+include 'dbconfig.php';
+
+// Prepare the SQL statement
+$sql = "INSERT INTO Students (student_id, student_name, student_email, enrollment_date) VALUES (:id, :name, :email, :enrollment_date)";
+
+$stmt = $pdo->prepare($sql);
+
+// Bind parameters
+$stmt->bindParam(':id', $student_id);
+$stmt->bindParam(':name', $student_name);
+$stmt->bindParam(':email', $student_email);
+$stmt->bindParam(':enrollment_date', $enrollment_date);
+
+// Sample data to insert
+$student_id = 21; // Unique student ID
+$student_name = "Andrea Brillantes"; // Student's name
+$student_email = "andreabrillantes@example.com"; // Student's email
+$enrollment_date = '2024-01-01'; // Enrollment date
+
+// Execute the statement
+$stmt->execute();
+echo "New student record created successfully!";
+?>
+
+
+// delete.php
+<?php
+// Include the database configuration file
+include 'dbconfig.php';
+
+// Prepare the SQL statement
+$sql = "DELETE FROM Students WHERE student_id = :id";
+$stmt = $pdo->prepare($sql);
+
+// Bind parameter
+$stmt->bindParam(':id', $student_id);
+
+// Sample ID to delete
+$student_id = 21; // ID of the student to delete
+
+// Execute the statement
+$stmt->execute();
+echo "Student record deleted successfully!";
+?>
+
+
+// update.php
+<?php
+// Include the database configuration file
+include 'dbconfig.php';
+
+// Prepare the SQL statement
+$sql = "UPDATE Students SET student_name = :name, student_email = :email WHERE student_id = :id";
+$stmt = $pdo->prepare($sql);
+
+// Bind parameters
+$stmt->bindParam(':id', $student_id);
+$stmt->bindParam(':name', $student_name);
+$stmt->bindParam(':email', $student_email);
+
+// Sample data to update
+$student_id = 1; // ID of the student to update
+$student_name = "Nestle Martin Celaje"; // New name
+$student_email = "nestlecelaje@gmail.com"; // New email
+
+// Execute the statement
+$stmt->execute();
+echo "Student record updated successfully!";
+?>
+
+
+// html_table.php
+<?php
+// Include the database configuration file
+include 'dbconfig.php';
+
+// Prepare and execute the query
+$stmt = $pdo->query("SELECT * FROM Students");
+$students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Display results in an HTML table
+echo "<table border='1'>
+<tr>
+<th>Student ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Enrollment Date</th>
+</tr>";
+
+foreach ($students as $student) {
+    echo "<tr>
+    <td>{$student['student_id']}</td>
+    <td>{$student['student_name']}</td>
+    <td>{$student['student_email']}</td>
+    <td>{$student['enrollment_date']}</td>
+    </tr>";
+}
+
+echo "</table>";
+?>
+
